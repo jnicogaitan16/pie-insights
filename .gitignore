@@ -18,6 +18,12 @@ ENV/
 # Environment variables
 .env
 
+# Claude Code (local only)
+.claude/
+
+# Docs (local only)
+docs/
+
 # IDE
 .vscode/
 .idea/
