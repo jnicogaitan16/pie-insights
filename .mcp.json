@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "mixpanel": {
-      "type": "http",
-      "url": "https://mcp.mixpanel.com/mcp"
-    }
-  }
-}
