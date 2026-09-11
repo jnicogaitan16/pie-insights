@@ -1,0 +1,43 @@
+{
+  "_descripcion": "Uso por colegio: breakdown por propiedad RBD",
+  "_instruccion": "Ejecutar via MCP mixpanel -> Run-Query. Reemplazar {EVENTO} y {DIAS}",
+  "_nota_rbd": "Usar colegio_rbd (no rbd) como campo universal. colegio_rbd existe en TODOS los eventos. rbd solo en FUR.",
+  "project_id": 3443728,
+  "report_type": "insights",
+  "report": {
+    "name": "Uso por colegio: {INFORME}",
+    "metrics": [
+      {
+        "eventName": "{EVENTO}",
+        "measurement": { "type": "basic", "math": "total" }
+      },
+      {
+        "eventName": "{EVENTO}",
+        "measurement": { "type": "basic", "math": "unique" }
+      }
+    ],
+    "breakdowns": [
+      {
+        "metric": {
+          "type": "property",
+          "propertyName": "colegio_rbd",
+          "propertyType": "number"
+        }
+      }
+    ],
+    "filters": [
+      { "type": "string", "propertyName": "$city", "operator": "does not equal", "value": "Dulles" },
+      { "type": "string", "propertyName": "$city", "operator": "does not equal", "value": "Cheyenne" },
+      { "type": "string", "propertyName": "$city", "operator": "does not equal", "value": "Chicago" },
+      { "type": "string", "propertyName": "$city", "operator": "does not equal", "value": "Phoenix" },
+      { "type": "string", "propertyName": "$city", "operator": "does not equal", "value": "Des Moines" },
+      { "type": "string", "propertyName": "$city", "operator": "does not equal", "value": "Boydton" },
+      { "type": "string", "propertyName": "$city", "operator": "does not equal", "value": "San Jose" }
+    ],
+    "chartType": "table",
+    "dateRange": {
+      "type": "relative",
+      "range": { "unit": "day", "value": "{DIAS}" }
+    }
+  }
+}

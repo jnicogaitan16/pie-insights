@@ -1,0 +1,51 @@
+{
+  "_descripcion": "Adopcion de informes: usuarios unicos y eventos totales",
+  "_instruccion": "Ejecutar via MCP mixpanel -> Run-Query. Reemplazar {EVENTO} y {DIAS}",
+  "_parametros": {
+    "EVENTO": "Nombre del evento (ej: FUR Speech Import Completed)",
+    "DIAS": "Periodo en dias (7, 30, 90)"
+  },
+  "_nota": "Usar siempre Integratepie-beta (3443728) para cruzar con MySQL QA",
+  "project_id": 3443728,
+  "report_type": "insights",
+  "report": {
+    "name": "Adopcion: {INFORME}",
+    "metrics": [
+      {
+        "eventName": "{EVENTO}",
+        "measurement": { "type": "basic", "math": "unique" }
+      },
+      {
+        "eventName": "{EVENTO}",
+        "measurement": { "type": "basic", "math": "total" }
+      }
+    ],
+    "filters": [
+      { "type": "string", "propertyName": "$city", "operator": "does not equal", "value": "Dulles" },
+      { "type": "string", "propertyName": "$city", "operator": "does not equal", "value": "Cheyenne" },
+      { "type": "string", "propertyName": "$city", "operator": "does not equal", "value": "Chicago" },
+      { "type": "string", "propertyName": "$city", "operator": "does not equal", "value": "Phoenix" },
+      { "type": "string", "propertyName": "$city", "operator": "does not equal", "value": "Des Moines" },
+      { "type": "string", "propertyName": "$city", "operator": "does not equal", "value": "Boydton" },
+      { "type": "string", "propertyName": "$city", "operator": "does not equal", "value": "San Jose" }
+    ],
+    "chartType": "bar",
+    "dateRange": {
+      "type": "relative",
+      "range": { "unit": "day", "value": "{DIAS}" }
+    }
+  },
+  "_ejemplo_all_fur": {
+    "_nota": "Para medir todos los FUR de una vez, usar estas metricas:",
+    "metrics": [
+      { "eventName": "FUR Speech Import Completed", "measurement": { "type": "basic", "math": "unique" } },
+      { "eventName": "FUR Psychoped Import Completed", "measurement": { "type": "basic", "math": "unique" } },
+      { "eventName": "FUR Kine TO Import Completed", "measurement": { "type": "basic", "math": "unique" } },
+      { "eventName": "FUR TL Deficit Import Completed", "measurement": { "type": "basic", "math": "unique" } },
+      { "eventName": "EPI Generated Report", "measurement": { "type": "basic", "math": "unique" } },
+      { "eventName": "PPI Generated Report", "measurement": { "type": "basic", "math": "unique" } },
+      { "eventName": "Fudei Pre-Sync Validation Shown", "measurement": { "type": "basic", "math": "unique" } },
+      { "eventName": "Fudei Sync Secret", "measurement": { "type": "basic", "math": "unique" } }
+    ]
+  }
+}

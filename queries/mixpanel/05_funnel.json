@@ -1,0 +1,35 @@
+{
+  "_descripcion": "Funnel de completitud: Import -> Indicator -> Text Edit",
+  "_instruccion": "Ejecutar via MCP mixpanel -> Run-Query con report_type: 'funnels'",
+  "_parametros": {
+    "TIPO_FUR": "Speech, Psychoped, Kine TO, o TL Deficit",
+    "DIAS": "Periodo en dias (recomendado: 90)"
+  },
+  "_funnels_disponibles": {
+    "FUR Speech": ["FUR Speech Import Completed", "FUR Speech Indicator Created", "FUR Speech Text Edited"],
+    "FUR Psychoped": ["FUR Psychoped Import Completed", "FUR Psychoped Indicator Created", "FUR Psychoped Text Edited"],
+    "FUR Kine TO": ["FUR Kine TO Import Completed", "FUR Kine TO Indicator Created", "FUR Kine TO Text Edited"],
+    "FUDEI Sync": ["Fudei Pre-Sync Validation Shown", "Fudei Sync Secret"]
+  },
+  "_resultados_baseline_2026_09_10": {
+    "FUR Kine TO": { "conversion": "100%", "tiempo": "3.3 dias", "veredicto": "BENCHMARK" },
+    "FUR Speech": { "conversion": "50%", "drop": "Import->Indicator", "tiempo": "24.7 dias" },
+    "FUR Psychoped": { "conversion": "50%", "drop": "Indicator->Text", "tiempo": "5.5 horas" },
+    "FUDEI Sync": { "conversion": "33%", "drop": "Validation->Sync", "tiempo": "1.7 dias" }
+  },
+  "project_id": 3443728,
+  "report_type": "funnels",
+  "report": {
+    "name": "Funnel: FUR {TIPO_FUR}",
+    "metrics": [
+      { "eventName": "FUR {TIPO_FUR} Import Completed" },
+      { "eventName": "FUR {TIPO_FUR} Indicator Created" },
+      { "eventName": "FUR {TIPO_FUR} Text Edited" }
+    ],
+    "conversionTime": { "unit": "day", "value": 30 },
+    "dateRange": {
+      "type": "relative",
+      "range": { "unit": "day", "value": "{DIAS}" }
+    }
+  }
+}
