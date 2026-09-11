@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PIE-Insights | {{TITULO}}</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0f1117;color:#e1e4e8;padding:24px;max-width:1200px;margin:0 auto}
+  h1{font-size:1.5rem;margin-bottom:4px}
+  .meta{color:#484f58;font-size:0.7rem;margin-bottom:6px;line-height:1.5}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+  .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:20px}
+  .grid-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px;margin-bottom:20px}
+  .card{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:18px}
+  .card h2{font-size:0.9rem;color:#8b949e;margin-bottom:10px;font-weight:500}
+  .card-full{grid-column:1/-1}
+  .kpi{text-align:center}
+  .kpi .value{font-size:2rem;font-weight:700}
+  .kpi .label{font-size:0.72rem;color:#8b949e;margin-top:2px}
+  .kpi .delta{font-size:0.68rem;margin-top:4px;padding:2px 8px;border-radius:10px;display:inline-block}
+  .src{font-size:0.6rem;color:#484f58;margin-top:4px;font-style:italic}
+  .up{background:#1a3a2a;color:#3fb950}
+  .warn{background:#3d2e00;color:#d29922}
+  .down{background:#3a1a1a;color:#f85149}
+  .neutral{background:#1c2028;color:#8b949e}
+  .badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:0.68rem;font-weight:600}
+  .b-green{background:#1a3a2a;color:#3fb950}
+  .b-yellow{background:#3d2e00;color:#d29922}
+  .b-red{background:#3a1a1a;color:#f85149}
+  .b-blue{background:#1a2a3a;color:#58a6ff}
+  table{width:100%;border-collapse:collapse;font-size:0.78rem}
+  th{text-align:left;color:#8b949e;font-weight:500;padding:7px 8px;border-bottom:1px solid #30363d}
+  td{padding:7px 8px;border-bottom:1px solid #21262d}
+  .chart-box{position:relative;height:240px}
+  .section{font-size:1.05rem;margin:26px 0 12px;color:#c9d1d9;border-bottom:1px solid #21262d;padding-bottom:6px}
+  .funnel-bar{height:30px;border-radius:6px;display:flex;align-items:center;padding:0 12px;font-size:0.75rem;font-weight:600;margin-bottom:5px;color:#fff}
+  .analysis{background:#1c2128;border-left:3px solid #58a6ff;padding:14px 16px;border-radius:0 8px 8px 0;margin:12px 0;font-size:0.8rem;line-height:1.6}
+  .analysis strong{color:#58a6ff}
+  .action{background:#1c2128;border-left:3px solid #3fb950;padding:14px 16px;border-radius:0 8px 8px 0;margin:8px 0;font-size:0.8rem;line-height:1.6}
+  .action.critical{border-left-color:#f85149}
+  .action.warning{border-left-color:#d29922}
+  .action h3{font-size:0.82rem;margin-bottom:6px}
+  .action p{color:#8b949e}
+  .highlight{background:#d2a8ff22;border:1px solid #d2a8ff44;border-radius:8px;padding:12px 16px;margin:12px 0;font-size:0.8rem}
+  .footer{text-align:center;color:#484f58;font-size:0.65rem;margin-top:30px;line-height:1.6}
+  hr{border:none;border-top:1px solid #21262d;margin:20px 0}
+</style>
+</head>
+<body>
+
+<!--
+  ============================================================
+  TEMPLATE DE DASHBOARD — PIE-Insights
+  ============================================================
+  Estructura estandar para todos los informes.
+  Reemplazar {{VARIABLES}} con datos reales.
+
+  SECCIONES OBLIGATORIAS:
+    1. KPIs principales (con delta vs periodo anterior)
+    2. Comparativo / Resumen (tabla completa)
+    3. Tendencia temporal (linea diaria o semanal)
+    4. Desglose por colegio
+    5. Funnels (Page View → Form Saved → Form Download)
+    6. Calidad / Completitud
+    7. Analisis cruzado (MySQL <-> Mixpanel)
+    8. Plan de accion (P0/P1/P2)
+    9. Fuentes y metodologia
+
+  REGLAS:
+    - Cada seccion debe tener su .src con fuente, rango y fecha
+    - Cada grafico tiene un .analysis debajo con interpretacion
+    - Plan de accion con: problema, impacto, evidencia, accion, metrica de exito
+    - Footer con fecha de consulta + disclaimer de snapshot
+  ============================================================
+-->
+
+<h1>{{TITULO}}</h1>
+<p class="meta">
+  Consulta: {{FECHA_CONSULTA}} |
+  Periodo: {{FECHA_DESDE}} → {{FECHA_HASTA}} ({{DIAS}}d) |
+  Comparacion: {{PERIODO_ANTERIOR}}<br>
+  MySQL: [DB QA] ({{RANGO_MYSQL}}) |
+  Mixpanel: Integratepie-beta ID [PROJECT_ID] ({{DIAS}}d, sin bots)
+</p>
+
+<!-- ==================== 1. KPIs ==================== -->
+<h3 class="section">1. KPIs Principales</h3>
+
+<div class="grid-4">
+  <div class="card kpi">
+    <div class="value" style="color:#58a6ff">{{KPI_REGISTROS}}</div>
+    <div class="label">Registros MySQL</div>
+    <div class="delta {{KPI_REGISTROS_DELTA_CLASS}}">{{KPI_REGISTROS_DELTA}}</div>
+    <div class="src">MySQL {{TABLA_MYSQL}} | {{RANGO_MYSQL}}</div>
+  </div>
+  <div class="card kpi">
+    <div class="value" style="color:#e1e4e8">{{KPI_PAGE_VIEW}}</div>
+    <div class="label">Page View (abrir)</div>
+    <div class="src">Mixpanel Page View filter form-name | {{DIAS}}d</div>
+  </div>
+  <div class="card kpi">
+    <div class="value" style="color:#3fb950">{{KPI_FORM_SAVED}}</div>
+    <div class="label">Form Saved (guardar)</div>
+    <div class="src">Mixpanel Form Saved | {{DIAS}}d sin bots</div>
+  </div>
+  <div class="card kpi">
+    <div class="value" style="color:#d2a8ff">{{KPI_FORM_DOWNLOAD}}</div>
+    <div class="label">Form Download (descargar)</div>
+    <div class="src">Mixpanel Form Download | {{DIAS}}d sin bots</div>
+  </div>
+</div>
+
+<div class="analysis">
+  <strong>Analisis:</strong> {{ANALISIS_KPIS}}
+</div>
+
+<!-- ==================== 2. COMPARATIVO ==================== -->
+<h3 class="section">2. Resumen Comparativo</h3>
+
+<!-- Insertar tabla comparativa aqui -->
+<!-- Usar .card-full para tabla de ancho completo -->
+
+<div class="analysis">
+  <strong>Analisis:</strong> {{ANALISIS_COMPARATIVO}}
+</div>
+
+<!-- ==================== 3. TENDENCIA ==================== -->
+<h3 class="section">3. Tendencia Temporal</h3>
+
+<div class="card">
+  <div class="src">Mixpanel Run-Query | {{FECHA_DESDE}} → {{FECHA_HASTA}} | Agrupado por {{UNIDAD_TIEMPO}} | Sin bots</div>
+  <div class="chart-box" style="height:280px"><canvas id="chartTrend"></canvas></div>
+</div>
+
+<div class="analysis">
+  <strong>Analisis:</strong> {{ANALISIS_TENDENCIA}}
+</div>
+
+<!-- ==================== 4. COLEGIOS ==================== -->
+<h3 class="section">4. Desglose por Colegio</h3>
+
+<div class="grid">
+  <div class="card">
+    <div class="src">Mixpanel breakdown colegio_rbd | {{DIAS}}d sin bots</div>
+    <div class="chart-box"><canvas id="chartColegios"></canvas></div>
+  </div>
+  <div class="card">
+    <h2>Detalle</h2>
+    <div class="src">MySQL JOIN colegio | {{RANGO_MYSQL}}</div>
+    <!-- Insertar tabla de colegios -->
+  </div>
+</div>
+
+<!-- ==================== 5. FUNNELS ==================== -->
+<h3 class="section">5. Funnel: Abrir → Guardar → Descargar</h3>
+
+<div class="card">
+  <div class="src">Mixpanel Funnels | {{DIAS}}d | Conversion window: 7 dias | Usuarios unicos</div>
+  <!-- Insertar funnel bars -->
+</div>
+
+<div class="analysis">
+  <strong>Analisis:</strong> {{ANALISIS_FUNNEL}}
+</div>
+
+<!-- ==================== 6. CALIDAD ==================== -->
+<h3 class="section">6. Calidad y Completitud</h3>
+
+<!-- Insertar graficos/tablas de completitud -->
+<!-- Donut para campos, tabla para detalle -->
+
+<!-- ==================== 7. CRUCE ==================== -->
+<h3 class="section">7. Cruce MySQL ↔ Mixpanel</h3>
+
+<!-- Insertar analisis cruzado: registros vs eventos por colegio/usuario -->
+
+<div class="analysis">
+  <strong>Analisis:</strong> {{ANALISIS_CRUCE}}
+</div>
+
+<!-- ==================== 8. PLAN DE ACCION ==================== -->
+<h3 class="section">8. Plan de Accion</h3>
+
+<!--
+  Usar estas clases segun prioridad:
+  <div class="action critical">  → P0 (rojo)
+  <div class="action warning">   → P1 (amarillo)
+  <div class="action">           → P2 (verde)
+
+  Cada accion debe tener:
+  - h3: Emoji + prioridad + titulo
+  - p: Problema, Impacto, Evidencia, Accion, Metrica de exito
+-->
+
+<!-- ==================== 9. FUENTES ==================== -->
+<h3 class="section">9. Fuentes y Metodologia</h3>
+
+<div class="card">
+  <table>
+    <thead><tr><th>Seccion</th><th>Fuente</th><th>Query</th><th>Rango</th></tr></thead>
+    <tbody>
+      <!-- Llenar con cada seccion y su fuente -->
+    </tbody>
+  </table>
+</div>
+
+<p class="footer">
+  PIE-Insights | Generado: {{FECHA_CONSULTA}}<br>
+  MySQL: [DB QA] (Azure QA) | Mixpanel: Integratepie-beta ID [PROJECT_ID]<br>
+  Snapshot al momento de la consulta. Para datos en tiempo real, re-ejecutar con /analista-datos.<br>
+  Bots filtrados: Dulles, Cheyenne, Chicago, Phoenix, Des Moines, Boydton, San Jose
+</p>
+
+<!-- ==================== CHARTS (llenar con datos reales) ==================== -->
+<script>
+const C={blue:'#58a6ff',green:'#3fb950',purple:'#d2a8ff',yellow:'#d29922',red:'#f85149',gray:'#484f58',grid:'#21262d',text:'#8b949e'};
+const defOpt={responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:C.text,font:{size:10}}}},scales:{x:{ticks:{color:C.text,font:{size:9}},grid:{color:C.grid}},y:{ticks:{color:C.text},grid:{color:C.grid},beginAtZero:true}}};
+
+// Tendencia
+new Chart(document.getElementById('chartTrend'),{type:'line',data:{
+  labels:[/* {{LABELS_TENDENCIA}} */],
+  datasets:[
+    {label:'Page View',data:[/* {{DATA_PV}} */],borderColor:C.blue,backgroundColor:C.blue+'22',fill:true,tension:0.2,pointRadius:3},
+    {label:'Form Saved',data:[/* {{DATA_FS}} */],borderColor:C.green,backgroundColor:C.green+'22',fill:true,tension:0.2,pointRadius:3},
+    {label:'Form Download',data:[/* {{DATA_FD}} */],borderColor:C.purple,backgroundColor:C.purple+'22',fill:true,tension:0.2,pointRadius:3}
+  ]
+},options:defOpt});
+
+// Colegios
+new Chart(document.getElementById('chartColegios'),{type:'bar',data:{
+  labels:[/* {{LABELS_COLEGIOS}} */],
+  datasets:[
+    {label:'Form Saved',data:[/* {{DATA_COL_FS}} */],backgroundColor:C.green,borderRadius:4},
+    {label:'Form Download',data:[/* {{DATA_COL_FD}} */],backgroundColor:C.purple,borderRadius:4}
+  ]
+},options:defOpt});
+</script>
+</body>
+</html>

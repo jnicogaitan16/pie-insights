@@ -2,7 +2,7 @@
 
 > **Fecha:** {FECHA}
 > **Período:** {FECHA_INICIO} → {FECHA_FIN} ({DIAS} días)
-> **Ambiente:** Beta (inteduc_beta)
+> **Ambiente:** Beta (Beta (QA))
 
 ---
 
