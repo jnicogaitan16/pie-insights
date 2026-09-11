@@ -217,8 +217,70 @@
         "total_syncs_30d": 5,
         "unique_schools_30d": 3
       }
+    },
+    {
+      "name": "Certificado Pertenencia",
+      "tipo": "certificado",
+      "eventos_mixpanel": {
+        "form_saved": "Form Saved",
+        "form_name_filter": "Certificado de Pertenencia y Diagnóstico PIE"
+      },
+      "tabla_mysql": "pie_form_certificado_pertenencia",
+      "campo_colegio": "colegio_id",
+      "campo_anio": "anio",
+      "campo_alumno": "persona_id",
+      "registro_pie_pattern": "certificado de pertenencia PIE",
+      "deploy_date": "2026-08-20",
+      "baseline_2026_09_11": {
+        "registros_mysql": 14,
+        "eventos_mixpanel": 62,
+        "usuarios_mixpanel": 2,
+        "colegios": 3,
+        "ratio_mixpanel_mysql": 4.4
+      }
+    },
+    {
+      "name": "Certificado Egreso",
+      "tipo": "certificado",
+      "eventos_mixpanel": {
+        "form_saved": "Form Saved",
+        "form_name_filter": "Certificado de Egreso PIE"
+      },
+      "tabla_mysql": "pie_form_certificado_egreso",
+      "campo_colegio": "colegio_id",
+      "campo_anio": "anio",
+      "campo_alumno": "persona_id",
+      "campos_extra": ["motivo_egreso", "fecha_egreso"],
+      "registro_pie_pattern": "certificado de egreso PIE",
+      "deploy_date": "2026-08-27",
+      "baseline_2026_09_11": {
+        "registros_mysql": 10,
+        "eventos_mixpanel": 61,
+        "usuarios_mixpanel": 3,
+        "colegios": 3,
+        "ratio_mixpanel_mysql": 6.1
+      }
     }
   ],
+  "form_saved_taxonomy": {
+    "_nota": "El evento Form Saved es el tracking universal. La propiedad form-name identifica el tipo de informe.",
+    "_total_90d": 1489,
+    "_total_tipos": 31,
+    "_usuarios_unicos": 11,
+    "propiedades_clave": ["form-name", "form-properties (JSON con form_anio y form_id)", "colegio_rbd", "colegio_name", "user_id", "rut", "config_pie_alumno", "diagnostico"],
+    "top_por_volumen": [
+      { "form_name": "FUDEI", "eventos": 803, "usuarios": 9 },
+      { "form_name": "Informe de la Familia", "eventos": 86, "usuarios": 3 },
+      { "form_name": "E.A. Fonoaudiológico", "eventos": 83, "usuarios": 4 },
+      { "form_name": "E.A. Psicopedagógico", "eventos": 78, "usuarios": 2 },
+      { "form_name": "Certificado de Pertenencia y Diagnóstico PIE", "eventos": 62, "usuarios": 2 },
+      { "form_name": "Certificado de Egreso PIE", "eventos": 61, "usuarios": 3 },
+      { "form_name": "E.A. Terapeuta Ocupacional", "eventos": 59, "usuarios": 3 },
+      { "form_name": "E.A. PACI 2.0", "eventos": 58, "usuarios": 3 },
+      { "form_name": "E.A. Pedagógico Curricular", "eventos": 55, "usuarios": 4 },
+      { "form_name": "E.A. Kinesiología", "eventos": 48, "usuarios": 2 }
+    ]
+  },
   "tablas_referencia": {
     "colegios": {
       "tabla": "colegio",
